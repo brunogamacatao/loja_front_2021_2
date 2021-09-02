@@ -1,24 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from 'react-router-dom';
+
+import PaginaInicial from "./componentes/PaginaInicial";
+import Rodape from "./componentes/Rodape";
+import Topo from "./componentes/Topo";
+
+import DetalheProduto from './componentes/DetalheProduto';
+import CarrinhoDeCompras from './componentes/CarrinhoDeCompras';
+import PaginaNaoEncontrada from './componentes/PaginaNaoEncontrada';
+import { useEffect, useState } from 'react';
+import { getProdutos } from './services/ProdutosService';
 
 function App() {
+  const [produtos, setProdutos] = useState([]);
+
+  useEffect(() => {
+    setProdutos(getProdutos());
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="principal">
+        <Topo/>
+        <Switch>
+          <Route path="/" exact={true}>
+            <PaginaInicial produtos={produtos}/>
+          </Route>
+          <Route path="/produto/:id">
+            <DetalheProduto/>
+          </Route>
+          <Route path="/carrinho">
+            <CarrinhoDeCompras/>
+          </Route>
+          <Route path="*">
+            <PaginaNaoEncontrada/>
+          </Route>
+        </Switch>
+        <Rodape/>
+      </div>
+    </Router>
   );
 }
 
